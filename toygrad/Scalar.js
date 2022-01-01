@@ -91,7 +91,7 @@ class Scalar {
     
     // this function is for the last output value, to initiate backprop
     backward() {
-        // d[loss]/d[last output] = 1.0 since it's the identity function
+        // d[loss]/d[loss] = 1.0 since it's the identity function
         this.grad = 1.0;
 
         // call backprop functions for all gates in graph
