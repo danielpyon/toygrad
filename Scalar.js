@@ -7,6 +7,8 @@ class Scalar {
         this.grad = 0;
     }
     add(other) {
+        if (!(other instanceof Scalar))
+            other = new Scalar(other);
         // forward pass
         let out = new Scalar(this.value + other.value);
         out.inputs.push(this, other);
@@ -19,7 +21,12 @@ class Scalar {
         };
         return out;
     }
+    sub(other) {
+        return this.add(other.mul(-1.0));
+    }
     mul(other) {
+        if (!(other instanceof Scalar))
+            other = new Scalar(other);
         let out = new Scalar(this.value * other.value);
         out.inputs.push(this, other);
         
@@ -48,4 +55,3 @@ class Scalar {
     }
 }
 
-export { Scalar };
