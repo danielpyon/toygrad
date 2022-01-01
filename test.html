@@ -1,0 +1,25 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>toygrad</title>
+</head>
+
+<body>
+  <script type="module">
+      import { Scalar } from "./Scalar.js";
+      console.log("Testing toygrad...");
+      let a = new Scalar(2);
+      let b = new Scalar(3);
+      let c = a.mul(b);
+      c.backward();
+
+      // should be 1, 2, 3
+      console.log(c.grad);
+      console.log(b.grad);
+      console.log(a.grad);
+  </script>
+</body>
+</html>
