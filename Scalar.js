@@ -1,5 +1,7 @@
 // Scalar for autograd
-class Scalar {
+"use strict";
+
+module.exports = class Scalar {
     constructor(value) {
         this.value = value;
         this.inputs = [];
@@ -36,8 +38,11 @@ class Scalar {
         }
         return out;
     }
-    neg(other) {
+    neg() {
         return this.mul(-1.0);
+    }
+    div(other) {
+        return this.mul(other.pow(-1.0));
     }
     pow(other) {
         if (!(other instanceof Scalar)) {
@@ -49,7 +54,16 @@ class Scalar {
             };
             return out;
         } else {
-
+            let out = new Scalar(this.value ** other.value);
+            out.inputs.push(this, other);
+            out.backprop = dout => {
+                let dthis = other.value * this.value ** (other.value - 1.0) // d[out]/d[this]
+                this.grad += dthis * dout;
+                
+                let dother = (this.value ** other.value) * Math.log(this.value); // d[out]/d[other]
+                other.grad += dother * dout;
+            };
+            return out;
         }
     }
     
@@ -71,4 +85,3 @@ class Scalar {
     }
 }
 
-exports.Scalar = Scalar;
