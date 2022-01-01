@@ -79,6 +79,15 @@ module.exports = class Scalar {
         };
         return out;
     }
+    relu() {
+        // relu(x) = max(0, x)
+        let out = new Scalar(Math.max(0, this.value));
+        out.inputs.push(this);
+        out.backprop = dout => {
+            this.grad += (this.value < 0.0 ? 0.0 : 1.0);
+        };
+        return out;
+    }
     
     // this function is for the last output value, to initiate backprop
     backward() {
