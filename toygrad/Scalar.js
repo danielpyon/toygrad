@@ -1,7 +1,7 @@
 // Scalar for autograd
 "use strict";
 
-module.exports = class Scalar {
+class Scalar {
     constructor(value) {
         this.value = value;
         this.inputs = [];
@@ -114,3 +114,4 @@ module.exports = class Scalar {
     }
 }
 
+module.exports = Scalar;

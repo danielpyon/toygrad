@@ -1,4 +1,4 @@
-const Scalar = require("./Scalar.js");
+const Scalar = require("../toygrad/Scalar.js");
 
 let a = new Scalar(2.0);
 let b = new Scalar(3.0);
@@ -9,6 +9,6 @@ let f = d.exp();
 f.backward();
 console.log(a.grad);
 console.log(b.grad);
-
+console.log(a)
 delete a; delete b; delete c; delete d; delete e; delete f;
 
