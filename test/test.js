@@ -9,6 +9,5 @@ let f = d.exp();
 f.backward();
 console.log(a.grad);
 console.log(b.grad);
-console.log(a)
 delete a; delete b; delete c; delete d; delete e; delete f;
 
