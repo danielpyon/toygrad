@@ -74,8 +74,15 @@ module.exports = class Scalar {
 
         // call backprop functions for all gates in graph
         // must go from last scalar to first
+        
+        let visited = new Set();
+        // preorder traversal of graph
+        // only visits each node once
         function call_backprop(out) {
-            // preorder
+            if (visited.has(out))
+                return;
+            visited.add(out);
+            
             out.backprop(out.grad);
             for (let input of out.inputs) {
                 call_backprop(input);

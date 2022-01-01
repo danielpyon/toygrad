@@ -7,7 +7,6 @@ let b = new Scalar(3.0);
 let c = a.pow(b);
 let d = b.div(c);
 let e = d.pow(c);
-
 e.backward();
 
 console.log(a.grad);
