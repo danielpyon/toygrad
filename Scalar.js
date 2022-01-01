@@ -55,3 +55,4 @@ class Scalar {
     }
 }
 
+exports.Scalar = Scalar;
