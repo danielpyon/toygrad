@@ -6,7 +6,8 @@ if __name__ == '__main__':
     c = a * b
     d = c + 2.0
     e = a * d
-    e.backward()
+    f = e ** 2
+    f.backward()
 
     print(a.grad)
     print(b.grad)

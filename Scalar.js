@@ -36,6 +36,22 @@ class Scalar {
         }
         return out;
     }
+    neg(other) {
+        return this.mul(-1.0);
+    }
+    pow(other) {
+        if (!(other instanceof Scalar)) {
+            let out = new Scalar(this.value ** other.value);
+            out.inputs.push(this);
+            out.backprop = dout => {
+                let local_grad = other.value * this.value ** (other.value - 1.0);
+                this.grad += local_grad * dout;
+            };
+            return out;
+        } else {
+
+        }
+    }
     
     // this function is for the last output value, to initiate backprop
     backward() {
