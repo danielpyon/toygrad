@@ -1,4 +1,5 @@
 import torch
+import math
 
 if __name__ == '__main__':
     a = torch.tensor(2.0, requires_grad=True)
@@ -6,7 +7,8 @@ if __name__ == '__main__':
     c = a ** b
     d = b / c
     e = d ** c
-    e.backward()
+    f = math.e ** d
+    f.backward()
 
     print(a.grad)
     print(b.grad)

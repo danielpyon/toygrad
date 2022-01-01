@@ -66,6 +66,19 @@ module.exports = class Scalar {
             return out;
         }
     }
+    exp() {
+        return new Scalar(Math.E).pow(this);
+    }
+    sig() {
+        const sigmoid = x => 1.0 / (1.0 + Math.E ** (-1.0 * x));
+        let out = new Scalar(sigmoid(this.value));
+        out.inputs.push(this);
+        out.backprop = dout => {
+            let localgrad = (1 - sigmoid(this.value)) * sigmoid(this.value);
+            this.grad += localgrad * dout;
+        };
+        return out;
+    }
     
     // this function is for the last output value, to initiate backprop
     backward() {
