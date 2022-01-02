@@ -9,5 +9,12 @@ let f = d.exp();
 f.backward();
 console.log(a.grad);
 console.log(b.grad);
-delete a; delete b; delete c; delete d; delete e; delete f;
+
+a = new Scalar(3.4);
+b = new Scalar(-1.3);
+f = a.add(b.sig()).div(a.sig().add(a.add(b).pow(2.0)));
+f.backward()
+
+console.log(a.grad);
+console.log(b.grad);
 
