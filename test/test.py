@@ -45,7 +45,8 @@ def main():
     assert close_enough(b.grad.item(), next(vals))
     assert close_enough(c.grad.item(), next(vals))
     assert close_enough(d.grad.item(), next(vals))
-    
+    del a, b, c, d, e, f, g, h
+
     print('ALL TESTS PASSED')
 
 if __name__ == '__main__':
