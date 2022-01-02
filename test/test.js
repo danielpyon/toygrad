@@ -18,3 +18,16 @@ f.backward()
 console.log(a.grad);
 console.log(b.grad);
 
+a = new Scalar(3.0);
+b = new Scalar(-4.0);
+c = new Scalar(2.0);
+d = new Scalar(-1.0);
+e = a.mul(b);
+f = c.max(d);
+g = e.add(f);
+let h = g.mul(2.0);
+h.backward();
+console.log(a.grad);
+console.log(b.grad);
+console.log(c.grad);
+console.log(d.grad);

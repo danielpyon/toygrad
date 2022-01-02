@@ -30,6 +30,22 @@ def main():
     assert close_enough(a.grad.item(), next(vals))
     assert close_enough(b.grad.item(), next(vals))
     del a, b, f
+
+    a = torch.tensor(3.0, requires_grad=True)
+    b = torch.tensor(-4.0, requires_grad=True)
+    c = torch.tensor(2.0, requires_grad=True)
+    d = torch.tensor(-1.0, requires_grad=True)
+    e = a * b
+    f = torch.max(c, d)
+    g = e + f
+    h = g * 2.0
+    h.backward()
+
+    assert close_enough(a.grad.item(), next(vals))
+    assert close_enough(b.grad.item(), next(vals))
+    assert close_enough(c.grad.item(), next(vals))
+    assert close_enough(d.grad.item(), next(vals))
+    
     print('ALL TESTS PASSED')
 
 if __name__ == '__main__':

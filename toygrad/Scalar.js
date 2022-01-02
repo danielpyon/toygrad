@@ -88,6 +88,23 @@ class Scalar {
         };
         return out;
     }
+    max(...others) {
+        let inputs = others.concat(this); // others is a list of Scalar objects
+        let values = inputs.map(x => x.value);
+
+        // fwd pass
+        const max_value = Math.max(...values);
+        let max_valued_input = inputs[values.indexOf(max_value)];
+
+        let out = new Scalar(max_value);
+        out.inputs.push(...inputs);
+
+        out.backprop = dout => {
+            // only the max-valued input gets a grad of 1.0, everything else is 0.0
+            max_valued_input.grad += 1.0 * dout;
+        };
+        return out;
+    }
     
     // this function is for the last output value, to initiate backprop
     backward() {
