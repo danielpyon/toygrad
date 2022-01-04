@@ -12,4 +12,3 @@ const N = X.length; // 100 data points
 const D = X[0].length; // 2 input dimensions
 const K = Math.max(...y); // 3 output classes
 
-
