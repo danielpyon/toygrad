@@ -5,10 +5,11 @@ class Network {
 }
 
 class ReLUNeuron {
-    constructor(n) {
+    constructor(n, LR=1.0) {
         // initialize weights randomly
         this.W = new Array(n);
         this.n = n;
+        this.LR = LR; // learning rate
         
         // Standard Normal variate using Box-Muller transform.
         function randn_bm() {
@@ -64,6 +65,14 @@ class ReLUNeuron {
             }
         };
         call_backprop(this.out);
+
+        // update weights
+        let W = this.W;
+        let b = this.b;
+        let n = this.n;
+        for (let i = 0; i < n; i++)
+            W[i].value -= this.LR * W[i].grad;
+        b.value -= this.LR * b.grad;
     }
     
 }
@@ -71,16 +80,12 @@ class ReLUNeuron {
 
 let NN = new ReLUNeuron(4);
 NN.forward([1, 2, 3, 4]);
-console.log(NN.out);
-console.log(NN.out.inputs);
-
 NN.backward(1.0);
-
 for (let i = 0; i < NN.n; i++) {
-    console.log(NN.x[i].grad);
-    console.log(NN.W[i].grad);
+    console.log("x" + i + ": " + NN.x[i].value);
+    console.log("w" + i + ": " + NN.W[i].value);
+    console.log();
 }
-console.log(NN.b.grad) // should be 1 (add gate gives 1.0 grad)
 
 module.exports.Network = Network;
 module.exports.ReLUNeuron = ReLUNeuron;
