@@ -117,14 +117,6 @@ class ReLUNeuron extends Module {
             }
         };
         call_backprop(this.out);
-
-        // update weights
-        let W = this.W;
-        let b = this.b;
-        let n = this.n;
-        for (let i = 0; i < n; i++)
-            W[i].value -= this.LR * W[i].grad;
-        b.value -= this.LR * b.grad;
     }
     
 }
