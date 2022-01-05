@@ -4,6 +4,27 @@ class Network {
     
 }
 
+class Layer {
+    constructor(neuron_type, n, m) {
+        // neuron_type is the class of neuron in this layer (eg ReLUNeuron)
+        // n inputs per neuron, m neurons in this layer
+        
+        this.n = n;
+        this.m = m;
+        this.neurons = new Array(n);
+
+        new ReLUNeuron();
+    }
+
+    forward() {
+
+    }
+
+    backward() {
+    
+    }
+}
+
 class ReLUNeuron {
     constructor(n, LR=1.0) {
         // initialize weights randomly
