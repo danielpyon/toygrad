@@ -8,6 +8,7 @@ class ReLUNeuron {
     constructor(n) {
         // initialize weights randomly
         this.W = new Array(n);
+        this.n = n;
         
         // Standard Normal variate using Box-Muller transform.
         function randn_bm() {
@@ -26,18 +27,22 @@ class ReLUNeuron {
         // given x: [n x 1]
         // return ReLU(W@x + b)
         
-        for (let i = 0; i < x.length; i++)
+        let n = this.n;
+        for (let i = 0; i < n; i++)
             if (!(x[i] instanceof Scalar))
                 x[i] = new Scalar(x[i]);
 
         this.x = x; // store x
         
-        let product = new Scalar(0.0);
-        for (let i = 0; i < this.W.length; i++) {
-            product = product.add(this.W[i].mul(x[i]));
-        }
+        let products = new Array(n);
+        for (let i = 0; i < n; i++)
+            products[i] = this.W[i].mul(x[i]);
+        
+        let sum = new Scalar(0.0);
+        for (let i = 0; i < n; i++)
+            sum = sum.add(products[i]);
 
-        let out = product.add(this.b).relu();
+        let out = sum.add(this.b).relu();
         this.out = out; // store out for backward pass
 
         return out;
@@ -45,7 +50,20 @@ class ReLUNeuron {
     backward(dout) {
         // given dL/dout
         // backpropagate the gradient to inputs
-        this.out.backward();
+        
+        this.grad = dout;
+        let visited = new Set();
+        function call_backprop(out) {
+            if (visited.has(out))
+                return;
+            visited.add(out);
+            
+            out.backprop(out.grad);
+            for (let input of out.inputs) {
+                call_backprop(input);
+            }
+        };
+        call_backprop(this.out);
     }
     
 }
@@ -53,10 +71,16 @@ class ReLUNeuron {
 
 let NN = new ReLUNeuron(4);
 NN.forward([1, 2, 3, 4]);
+console.log(NN.out);
+console.log(NN.out.inputs);
+
 NN.backward(1.0);
 
-console.log(NN.x[0].grad);
-console.log(NN.W[0].grad);
+for (let i = 0; i < NN.n; i++) {
+    console.log(NN.x[i].grad);
+    console.log(NN.W[i].grad);
+}
+console.log(NN.b.grad) // should be 1 (add gate gives 1.0 grad)
 
 module.exports.Network = Network;
 module.exports.ReLUNeuron = ReLUNeuron;
