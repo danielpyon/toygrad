@@ -1,39 +1,63 @@
 let Scalar = require("./Scalar.js");
 
-class Network {
-    
+// Each one of these is a "Module", so that we can save code in the "backward" call
+
+class Module {
+    // Every module has "modules"
+    backward(dout) {
+        // dout is [m x 1], same as this.modules
+        for (let i = 0; i < this.modules.length; i++)
+            this.modules[i].backward(dout[i]);
+    }
 }
 
-class Layer {
+// Network: contains layers
+class Network extends Module {
+    constructor(layers) {
+        super();
+        
+        // layers is a list of Layer objects
+        this.modules = layers;
+    }
+    forward(x) {
+        /* TODO: forward pass for Network
+        let out = [];
+        for (let i = 0; i < this.modules.length; i++)
+            this.modules[i].forward(x)
+        return out;
+        */
+    }
+}
+
+// Layer: contains fully connected neurons
+class Layer extends Module {
     constructor(NeuronType, n, m) {
         // NeuronType is the class of neuron in this layer (eg ReLUNeuron)
         // n inputs per neuron, m neurons in this layer
-        
+        super();
+
         this.n = n;
         this.m = m;
-        this.neurons = [];
+        this.modules = [];
 
         for (let i = 0; i < m; i++)
-            this.neurons.push(new NeuronType(n));
+            this.modules.push(new NeuronType(n));
     }
 
     forward(x) {
         // Returns [m x 1] vector of each output value in layer
         let out = [];
         for (let i = 0; i < this.m; i++)
-            out.push(this.neurons[i].forward(x));
+            out.push(this.modules[i].forward(x));
         return out;
-    }
-
-    backward(dout) {
-        // Input: dout ([m x 1] vector of gradients w.r.t loss function)
-        for (let i = 0; i < this.m; i++)
-            this.neurons[i].backward(dout[i]);
     }
 }
 
-class ReLUNeuron {
+// Neuron: contains weights
+class ReLUNeuron extends Module {
     constructor(n, LR=1.0) {
+        super();
+
         // initialize weights randomly
         this.W = new Array(n);
         this.n = n;
@@ -105,7 +129,7 @@ class ReLUNeuron {
     
 }
 
-
+/*
 let NN = new ReLUNeuron(4);
 NN.forward([1, 2, 3, 4]);
 NN.backward(1.0);
@@ -114,6 +138,25 @@ for (let i = 0; i < NN.n; i++) {
     console.log("w" + i + ": " + NN.W[i].value);
     console.log();
 }
+*/
+
+/*
+let NN = new Layer(ReLUNeuron, 5, 3);
+NN.forward([1, 2, 3, 4, 5]);
+NN.backward([0.1, 0.2, 0.3, 0.4, 0.5]);
+console.log(NN.neurons)
+console.log(NN.neurons[0].W[0].grad);
+*/
+
+let NN = new Network(
+    new Layer(4, 3),
+    new Layer(3, 2),
+    new Layer(2, 1));
+
+// figure out how to softmax the last layer
+NN.forward([1, 2, 3, 4]);
+NN.backward();
 
 module.exports.Network = Network;
+module.exports.Layer = Layer;
 module.exports.ReLUNeuron = ReLUNeuron;
