@@ -5,23 +5,30 @@ class Network {
 }
 
 class Layer {
-    constructor(neuron_type, n, m) {
-        // neuron_type is the class of neuron in this layer (eg ReLUNeuron)
+    constructor(NeuronType, n, m) {
+        // NeuronType is the class of neuron in this layer (eg ReLUNeuron)
         // n inputs per neuron, m neurons in this layer
         
         this.n = n;
         this.m = m;
-        this.neurons = new Array(n);
+        this.neurons = [];
 
-        new ReLUNeuron();
+        for (let i = 0; i < m; i++)
+            this.neurons.push(new NeuronType(n));
     }
 
-    forward() {
-
+    forward(x) {
+        // Returns [m x 1] vector of each output value in layer
+        let out = [];
+        for (let i = 0; i < this.m; i++)
+            out.push(this.neurons[i].forward(x));
+        return out;
     }
 
-    backward() {
-    
+    backward(dout) {
+        // Input: dout ([m x 1] vector of gradients w.r.t loss function)
+        for (let i = 0; i < this.m; i++)
+            this.neurons[i].backward(dout[i]);
     }
 }
 
