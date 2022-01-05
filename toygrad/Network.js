@@ -151,7 +151,8 @@ console.log(NN.neurons[0].W[0].grad);
 let NN = new Network(
     new Layer(4, 3),
     new Layer(3, 2),
-    new Layer(2, 1));
+    new Layer(2, 1)
+);
 
 // figure out how to softmax the last layer
 NN.forward([1, 2, 3, 4]);
