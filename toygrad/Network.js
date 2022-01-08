@@ -102,7 +102,7 @@ class ReLUNeuron extends Module {
     }
     parameters() {
         // return [w0, w1, ... wn, b]
-        params = [];
+        let params = [];
         for (let weight of this.W)
             params.push(weight);
         params.push(this.b);
@@ -159,17 +159,6 @@ class ReLUNeuron extends Module {
     }
     
 }
-
-let NN = new Network([
-    new Layer(ReLUNeuron, 4, 3),
-    new Layer(ReLUNeuron, 3, 2),
-    new Layer(ReLUNeuron, 2, 1, linear=true)
-]);
-
-NN.forward([1, 2, 3, 4]);
-NN.backward([1.0]);
-
-console.log(NN.modules[0]);
 
 module.exports.Network = Network;
 module.exports.Layer = Layer;
