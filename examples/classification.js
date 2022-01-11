@@ -27,12 +27,27 @@ let NN = new Network([
     new Layer(ReLUNeuron, 16, 1, linear=true)
 ]);
 
-let hinge = actual, guess => Math.max(0, 1 - actual * guess);
+const hinge = actual, guess => Math.max(0, 1 - actual * guess);
+const step_size = 1.0;
 
-function loss(batch_size) {
-    // use X and y, split into buckets of batch_size size
-    // do fwd pass with NN, calc hinge loss
-    // return the loss (Scalar value)
+function get_random_batch(batch_size) {
+    const random_int = max => Math.floor(Math.random() * max);
+    let random_indices = [];
+    for (let i = 0; i < batch_size; i++)
+        random_indices.push(random_int(X.length));
+    return random_indices;
+}
+
+for (let i = 0; i < 100; i++) {
+    let indices = get_random_batch(20);
+    let outputs = [];
+    for (let idx of indices)
+        outputs.push(NN.forward(X[idx]));
+
+    NN.zero_grad();
+    
+    for (let p of NN.parameters())
+        p.value -= step_size * p.grad;
 }
 
 /*
