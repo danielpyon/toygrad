@@ -17,47 +17,53 @@ let y = dataset["y"];
 X.splice(200, 100);
 y.splice(200, 100);
 
-const N = X.length; // 200 data points
-const D = X[0].length; // 2 input dimensions
-const K = Math.max(...y); // 2 output classes
-
 let NN = new Network([
-    new Layer(ReLUNeuron, D, 16), // D = 2
+    new Layer(ReLUNeuron, 2, 16),
     new Layer(ReLUNeuron, 16, 16),
     new Layer(ReLUNeuron, 16, 1, linear=true)
 ]);
 
-const hinge = actual, guess => Math.max(0, 1 - actual * guess);
-const step_size = 1.0;
+function shuffle(obj1, obj2) {
+  var index = obj1.length;
+  var rnd, tmp1, tmp2;
 
-function get_random_batch(batch_size) {
-    const random_int = max => Math.floor(Math.random() * max);
-    let random_indices = [];
-    for (let i = 0; i < batch_size; i++)
-        random_indices.push(random_int(X.length));
-    return random_indices;
+  while (index) {
+    rnd = Math.floor(Math.random() * index);
+    index -= 1;
+    tmp1 = obj1[index];
+    tmp2 = obj2[index];
+    obj1[index] = obj1[rnd];
+    obj2[index] = obj2[rnd];
+    obj1[rnd] = tmp1;
+    obj2[rnd] = tmp2;
+  }
 }
 
-for (let i = 0; i < 100; i++) {
-    let indices = get_random_batch(20);
-    let outputs = [];
-    for (let idx of indices)
-        outputs.push(NN.forward(X[idx]));
+shuffle(X, y);
+const num_training = 80;
 
+// sgd
+let step_size = 1.0;
+for (let i = 0; i < 100; i++) {
+    let idx = Math.floor(Math.random() * num_training);
+    let output = NN.forward(X[idx])[0];
+	
+	let loss = new Scalar(1.0).sub(output.mul(y[idx])).max(new Scalar(0.0));
     NN.zero_grad();
+	loss.backward();
     
+	step_size = 1.0 - 0.9 * i / 100.0;
     for (let p of NN.parameters())
         p.value -= step_size * p.grad;
 }
 
-/*
-training loop will look something like this:
-for 100 iterations
-    l = loss(20)
-    
-    NN.zero_grad()
-    l.backward()
+const sigmoid = x => 1.0 / (1.0 + Math.E**(-x));
+let correct = 0;
+for (let i = num_training; i < X.length; i++) {
+	let classification = sigmoid(NN.forward(X[i])[0]) > 0.5 ? 1 : 0;
+	if (classification == y[i])
+		correct++;
+}
 
-    for each parameter p
-        p -= stepsize * p.grad
-*/
+console.log("Accuracy: " + correct / (X.length - num_training) + "%");
+
