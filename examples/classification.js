@@ -48,11 +48,11 @@ for (let i = 0; i < 100; i++) {
     let idx = Math.floor(Math.random() * num_training);
     let output = NN.forward(X[idx])[0];
 	
-	let loss = new Scalar(1.0).sub(output.mul(y[idx])).max(new Scalar(0.0));
+    let loss = new Scalar(1.0).sub(output.mul(y[idx])).max(new Scalar(0.0));
     NN.zero_grad();
-	loss.backward();
+    loss.backward();
     
-	step_size = 1.0 - 0.9 * i / 100.0;
+    step_size = 1.0 - 0.9 * i / 100.0;
     for (let p of NN.parameters())
         p.value -= step_size * p.grad;
 }
